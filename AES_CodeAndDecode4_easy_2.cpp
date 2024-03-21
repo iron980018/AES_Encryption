@@ -366,8 +366,8 @@ class aes
             hex_msg = convertToUpperCase(hex_msg);
             hex_key = convertToUpperCase(hex_key);
 
-            //cout<<"hex_msg : "<<hex_msg<<endl;
-            //cout<<"hex_key : "<<hex_key<<endl;
+            cout<<"hex_msg : "<<hex_msg<<endl;
+            cout<<"hex_key : "<<hex_key<<endl;
 
             hex_msg = AddRoundKey(hex_msg);
             hex_msg = convertToUpperCase(hex_msg);
@@ -381,33 +381,33 @@ class aes
             cout<<"hex_msg : "<<hex_msg<<endl;
             */
             
-            for(int i = 0 ; i < 9 ; i ++)
+            for(int i = 0 ; i < 1 ; i ++)
             {
                 hex_msg = SubBytes(hex_msg);
                 hex_msg = convertToUpperCase(hex_msg);
-                //cout<<"after "<<i<<" SubBytes hex_msg : "<<hex_msg<<endl;
+                cout<<"after "<<i<<" SubBytes hex_msg : "<<hex_msg<<endl;
                 hex_msg = ShiftRows(hex_msg);
                 hex_msg = convertToUpperCase(hex_msg);
-                //cout<<"after "<<i<<" ShiftRows hex_msg : "<<hex_msg<<endl;
+                cout<<"after "<<i<<" ShiftRows hex_msg : "<<hex_msg<<endl;
                 hex_msg = MixColumns(hex_msg);
                 hex_msg = convertToUpperCase(hex_msg);
-                //cout<<"after "<<i<<" MixColumns hex_msg : "<<hex_msg<<endl;
+                cout<<"after "<<i<<" MixColumns hex_msg : "<<hex_msg<<endl;
                 hex_msg = AddRoundKey(hex_msg);
                 hex_msg = convertToUpperCase(hex_msg);
-                //cout<<"after "<<i<<" AddRoundKey hex_msg : "<<hex_msg<<endl;
+                cout<<"after "<<i<<" AddRoundKey hex_msg : "<<hex_msg<<endl;
             }
             hex_msg = SubBytes(hex_msg);
             hex_msg = convertToUpperCase(hex_msg);
-            //cout<<"after "<<" SubBytes hex_msg : "<<hex_msg<<endl;
+            cout<<"after "<<" SubBytes hex_msg : "<<hex_msg<<endl;
             hex_msg = ShiftRows(hex_msg);
             hex_msg = convertToUpperCase(hex_msg);
-            //cout<<"after "<<" ShiftRows hex_msg : "<<hex_msg<<endl;
+            cout<<"after "<<" ShiftRows hex_msg : "<<hex_msg<<endl;
             hex_msg = AddRoundKey(hex_msg);
             hex_msg = convertToUpperCase(hex_msg);
-            //cout<<"after "<<" AddRoundKey hex_msg : "<<hex_msg<<endl;
+            cout<<"after "<<" AddRoundKey hex_msg : "<<hex_msg<<endl;
 
             code_msg =  GetCodedMsg();
-            //cout<<"code_msg : "<<code_msg<<endl;
+            cout<<"code_msg : "<<code_msg<<endl;
             return code_msg;
         }
         string decode(string icode_msg,string ikey)
@@ -415,38 +415,39 @@ class aes
             key = ikey;
             code_msg = icode_msg;
             hex_key = KeyString2KeyHexString(key);
-            //cout<<"original code msg : "<<code_msg<<endl;
+            hex_key = convertToUpperCase(hex_key);
+            cout<<"original code msg : "<<code_msg<<endl;
 
             code_msg =  AddRoundKey(code_msg);
             code_msg = convertToUpperCase(code_msg);
-            //cout<<"after 1 addRK : "<<code_msg<<endl;
+            cout<<"after 1 addRK : "<<code_msg<<endl;
 
-            for(int i = 0 ; i < 9 ; i ++)
+            for(int i = 0 ; i < 1 ; i ++)
             {
                 code_msg = InvShiftRows(code_msg);
                 code_msg = convertToUpperCase(code_msg);
-                //cout<<"after "<<i<<" InvShiftRows : "<<code_msg<<endl;
+                cout<<"after "<<i<<" InvShiftRows : "<<code_msg<<endl;
                 code_msg = InvSubBytes(code_msg);
                 code_msg = convertToUpperCase(code_msg);
-                //cout<<"after "<<i<<" InvSubBytes : "<<code_msg<<endl;
+                cout<<"after "<<i<<" InvSubBytes : "<<code_msg<<endl;
                 code_msg = InvMixColumns(code_msg);
                 code_msg = convertToUpperCase(code_msg);
-                //cout<<"after "<<i<<" InvMixColumns : "<<code_msg<<endl;
+                cout<<"after "<<i<<" InvMixColumns : "<<code_msg<<endl;
                 code_msg = AddRoundKey(code_msg);
                 code_msg = convertToUpperCase(code_msg);
-                //cout<<"after "<<i<<" AddRoundKey : "<<code_msg<<endl;
+                cout<<"after "<<i<<" AddRoundKey : "<<code_msg<<endl;
             }
             code_msg = InvShiftRows(code_msg);
             code_msg = convertToUpperCase(code_msg);
-            //cout<<"last InvShiftRows : "<<code_msg<<endl;
+            cout<<"last InvShiftRows : "<<code_msg<<endl;
             code_msg = InvSubBytes(code_msg);
             code_msg = convertToUpperCase(code_msg);
-            //cout<<"last InvSubBytes : "<<code_msg<<endl;
+            cout<<"last InvSubBytes : "<<code_msg<<endl;
             code_msg =  AddRoundKey(code_msg);
             code_msg = convertToUpperCase(code_msg);
-            //cout<<"last AddRoundKey : "<<code_msg<<endl;
+            cout<<"last AddRoundKey : "<<code_msg<<endl;
             
-            //cout<<"code_msg : "<<code_msg<<endl;
+            cout<<"code_msg : "<<code_msg<<endl;
             
             msg = HexStringToString(code_msg);
 
@@ -938,16 +939,26 @@ int main()
     aes bob;
     
     string key = "ABCDABCDABCDABCD",msg="HelloWorld",code="",ans="",temp="";
-    int time = 1;
+    int time = 1 , left = msg.length()%16;
     if(msg.length() > 16)
         time = msg.length()/16 + 1;
 
     for(int i = 0 ; i < time ; i++)
     {
         temp = "";
-        for(int j = 0 ; j < msg.length()-i*16 ; j++)
+        if(i != time -1)
         {
-            temp += msg[i*16+j];                
+            for(int j = 0 ; j < 16 ; j++)
+            {
+                temp += msg[i*16+j];                
+            }
+        }
+        else
+        {
+            for(int j = 0 ; j < left ; j++)
+            {
+                temp += msg[i*16+j];                
+            }
         }
         code = alice.code(temp,key);
         ans += bob.decode(code,key);
