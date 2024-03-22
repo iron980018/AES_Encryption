@@ -17,7 +17,7 @@
 2024/3/23:
 修正加密金鑰前8字元必須跟後8字元一樣的問題
 原因為解密時使用了錯誤的流程:
-![image](https://github.com/iron980018/AES_Encryption/blob/main/incorrect.jpg)
+![image](https://github.com/iron980018/AES_Encryption/blob/main/incorrect.png)
 正確的如下:
 ![image](https://github.com/iron980018/AES_Encryption/blob/main/correct.jpg)
 
