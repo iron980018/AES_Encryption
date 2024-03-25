@@ -125,6 +125,7 @@ class aes
         {
             msg = imsg;
             key = ikey;
+            SetKeyLengthType(key);
             hex_msg = StringToHexString(msg);
             hex_key = KeyString2KeyHexString(key);
             hex_msg = convertToUpperCase(hex_msg);
@@ -163,6 +164,7 @@ class aes
         {
             key = ikey;
             code_msg = icode_msg;
+            SetKeyLengthType(key);
             hex_key = KeyString2KeyHexString(key);
             hex_key = convertToUpperCase(hex_key);
 
@@ -196,6 +198,7 @@ class aes
             return msg;
         }
     private:
+        int key_length_type = 1;
         string key="",msg="",code_msg="",hex_msg="",hex_key="";
         string GetCodedMsg()
         {
@@ -473,11 +476,11 @@ class aes
                 ss << hex << setw(2) << setfill('0') << static_cast<int>(ikey[i]);
             }
             temp_hex_key = ss.str();
-            if(temp_hex_key.length()%32 != 0)
+            if(temp_hex_key.length()%(32*key_length_type) != 0)
             {
                 if(temp_hex_key.length() % 2 == 0)
                 {
-                    while (temp_hex_key.length()%32 != 0)
+                    while (temp_hex_key.length()%(32*key_length_type) != 0)
                     {
                         temp_hex_key += "0";
                     }
@@ -497,11 +500,11 @@ class aes
                 ss << hex << setw(2) << setfill('0') << static_cast<int>(imsg[i]);
             }
             temp_hex_msg = ss.str();
-            if(temp_hex_msg.length()%32 != 0)
+            if(temp_hex_msg.length()%(32*key_length_type) != 0)
             {
                 if(temp_hex_msg.length() % 2 == 0)
                 {
-                    while (temp_hex_msg.length()%32 != 0)
+                    while (temp_hex_msg.length()%(32*key_length_type) != 0)
                     {
                         temp_hex_msg += "0";
                     }
@@ -527,6 +530,25 @@ class aes
 
             return temp_msg;
         }
+        void SetKeyLengthType(string key)
+        {
+            switch (key.length())
+            {
+            case 16:
+                key_length_type = 1;
+                break;
+            case 24:
+                key_length_type = 3;
+                break;
+            case 32:
+                key_length_type = 2;
+                break;            
+            default:
+                cout<<"key length error ! set key to default key !"<<endl;
+                key = "ABCDEFGH12345678";
+                break;
+            }
+        }
 };
 
 int main()
@@ -534,7 +556,7 @@ int main()
     aes alice;
     aes bob;
     
-    string key = "E531A8E5328A9591",msg="Hello World ! this is AES encryption implementation",code="";
+    string key = "E531A8E5328A9591ABCDEFGH",msg="Hello World ! this is AES encryption implementation",code="";
 
     code = alice.code(msg,key);
     cout<<bob.decode(code,key)<<endl;
